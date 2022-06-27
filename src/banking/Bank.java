@@ -196,7 +196,7 @@ public class Bank extends JFrame
                             
                             String query4 = "UPDATE Customer SET balance = " + newBalance + " WHERE custNo = " + Integer.parseInt(Custno) + ";";
 
-                            stmt.executeQuery(query4);
+                            stmt.executeUpdate(query4);
                         }
                         
                     } else
