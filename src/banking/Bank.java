@@ -71,10 +71,10 @@ public class Bank extends JFrame
         panel.add(jl25);
         panel.add(jtf25);
         panel.add(jb2);
-        panel.add(jta);
         panel.add(jl31);
         panel.add(jtf31);
         panel.add(jb3);
+        panel.add(jta);
         
         jb1.addActionListener(new ActionListener() 
         {
@@ -84,21 +84,20 @@ public class Bank extends JFrame
                 {
                     Statement stmt;
                     Class.forName("com.mysql.jdbc.Driver");
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/banking", "root", "");
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/banking", "root", "chemlab2015");
 
                     if (conn != null) 
                     {
 
                         System.out.println("Connection successful !!!");
-                        String Repno = jtf11.getText();
+                        int Repno = Integer.parseInt(jtf11.getText());
                         String Repname = jtf12.getText();
                         String branch = jtf13.getText();
                         stmt = (Statement) conn.createStatement();
-                        System.out.println(Repno + " " + Repname + " " + branch + " created!");
 
-                        Representative newRep = new Representative(Integer.parseInt(Repno), Repname, branch);
+                        Representative newRep = new Representative(Repno, Repname, branch);
                         representatives.add(newRep);
-                        String query1 = "insert into Representative values('" + Repno + "','" + Repname + "','" + branch + "');";
+                        String query1 = "insert into Representative values('" + Repname + "','" + Repno + "','" + branch + "');";
 
                         stmt.executeUpdate(query1);
                     } 
@@ -125,23 +124,23 @@ public class Bank extends JFrame
                     Statement stmt2;
                     Class.forName("com.mysql.jdbc.Driver");
 
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root",
-                        "");
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/banking", "root",
+                        "chemlab2015");
 
                     if (conn != null) 
                     {
                         System.out.println("Connection successful !!!");
-                        String Custno = jtf21.getText();
+                        int Custno = Integer.parseInt(jtf21.getText());
                         String CustName = jtf22.getText();
                         String balance = jtf24.getText();
                         double balanceAmount = Double.parseDouble(balance);
-                        String Rno = jtf25.getText();
+                        int Rno = Integer.parseInt(jtf25.getText());
 
                         stmt2 = (Statement) conn.createStatement();
                         System.out.println(Custno + " " + CustName + " " + balanceAmount + " " + Rno);
                         String query2 = "insert into Customer values('" + Custno + "','" +
                             CustName + "','" + balanceAmount + "','" + Rno + "');";
-                        Customer newCust = new Customer(Integer.parseInt(Custno), CustName, balanceAmount, Integer.parseInt(Rno));
+                        Customer newCust = new Customer(Custno, CustName, balanceAmount, Rno);
                         customers.add(newCust);
                         stmt2.executeUpdate(query2);
                     } 
@@ -167,7 +166,7 @@ public class Bank extends JFrame
                 {
                     Statement stmt;
                     Class.forName("com.mysql.jdbc.Driver");
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "");
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/banking", "root", "chemlab2015");
 
                     if (conn != null) 
                     {
@@ -175,16 +174,16 @@ public class Bank extends JFrame
                     	
                         stmt = (Statement) conn.createStatement();
                         String Custno = jtf31.getText();
-                        String query3 = "SELECT FROM Customer WHERE Custno = " + Integer.parseInt(Custno) + ")";
+                        String query3 = "SELECT * FROM Customer WHERE custNo = " + Integer.parseInt(Custno) + ";";
 
                         ResultSet rs = stmt.executeQuery(query3);
                         
-                        double balance = Double.parseDouble(rs.getString("balance"));
-                        double interest = (balance * 1 * 10) / 100;
-                        double newBalance = balance + interest;
-                        
-                        while (rs.next()) 
+                        while(rs.next())
                         {
+                        	double balance = Double.parseDouble(rs.getString("balance"));
+                            double interest = (balance * 1 * 10) / 100;
+                            double newBalance = balance + interest;
+                            
                             jta.append("Interest Amount after 1 Year");
                             jta.append("\n");
                             jta.append(interest + "");
@@ -192,11 +191,13 @@ public class Bank extends JFrame
                             jta.append("New Balance : ");
                             jta.append(newBalance + "");
                             jta.append("\n");
-                        }
-                        
-                        String query4 = "UPDATE Customer SET balance = " + newBalance + " WHERE Custno = " + Integer.parseInt(Custno) + ")";
+                            
+                            System.out.println("UPDATE Customer SET balance = " + newBalance + " WHERE custNo = " + Integer.parseInt(Custno) + ";");
+                            
+                            String query4 = "UPDATE Customer SET balance = " + newBalance + " WHERE custNo = " + Integer.parseInt(Custno) + ";";
 
-                        stmt.executeQuery(query4);
+                            stmt.executeQuery(query4);
+                        }
                         
                     } else
                         System.out.println("Connection not successful!!!");
